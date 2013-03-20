@@ -119,13 +119,13 @@ describe Message do
 
   context '#successful?' do
     it 'returns true when the message send has been successful' do
-      stub = stub_request(:post, "https://#{ACCOUNT_SID}:#{AUTH_TOKEN}@api.twilio.com/2010-04-01/Accounts/#{ACCOUNT_SID}/SMS/Messages.json").with(:body => URI.encode_www_form('From' => from, 'To' => to, 'Body' => body))
+      stub = stub_request(:post, "https://#{ACCOUNT_SID}:#{AUTH_TOKEN}@api.twilio.com/2010-04-01/Accounts/#{ACCOUNT_SID}/SMS/Messages.json").with(:body => URI.encode_www_form('From' => from, 'To' => to, 'Body' => body)).to_return(:status => 200)
       message = Message.create(:from => from, :to => to, :body => body)
       message.successful?.should be_true
     end
 
     it 'returns false if it is not successful' do
-      stub = stub_request(:post, "https://#{ACCOUNT_SID}:#{AUTH_TOKEN}@api.twilio.com/2010-04-01/Accounts/#{ACCOUNT_SID}/SMS/Messages.json").with(:body => URI.encode_www_form('From' => from, 'To' => "+14158297583", 'Body' => body))
+      stub = stub_request(:post, "https://#{ACCOUNT_SID}:#{AUTH_TOKEN}@api.twilio.com/2010-04-01/Accounts/#{ACCOUNT_SID}/SMS/Messages.json").with(:body => URI.encode_www_form('From' => from, 'To' => "+14158297583", 'Body' => body)).to_return(:status => 400)
       message = Message.create(:from => from, :to => "+14158297583", :body => body)
       message.successful?.should be_false
     end
