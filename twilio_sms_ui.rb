@@ -30,7 +30,7 @@ def send_message
   puts "Type your message."
   message_body = gets.chomp
   phone_numbers.map do |number|
-    if message = Message.create(:from => $user_number, :to => number, :body => message_body)
+    message = Message.create(:from => $user_number, :to => number, :body => message_body)
     if message.successful?
       puts "Your message was sent to #{message.to}"
     else

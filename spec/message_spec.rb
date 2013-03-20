@@ -7,13 +7,34 @@ describe Message do
   let(:body) {'rolling now!'}
   # let(:stub) {stub_request(:post, "https://#{ACCOUNT_SID}:#{AUTH_TOKEN}@api.twilio.com/2010-04-01/Accounts/#{ACCOUNT_SID}/SMS/Messages.json").with(:body => URI.encode_www_form('From' => from, 'To' => to, 'Body' => body))}
 
-  # context '#initialize' do
-  #   it 'creates an instance of message with an argument'
+  context '#initialize' do
+    it 'creates an instance of message with an argument' do
+      message = Message.new(:from => '+12345678912', :to => '+12345678912', :body => 'test')
+      message.should be_an_instance_of Message
+    end
+  end
 
-  # end
+  context 'accessors' do
+    it 'returns the number for from' do
+      message = Message.new(:from => '+12345678912', :to => '+12345678912', :body => 'test')
+      message.from.should eq '+12345678912'
+    end
 
-  # context 'accessors' do
-  # end
+    it 'returns the number for to' do
+      message = Message.new(:from => '+12345678912', :to => '+13456789123', :body => 'test')
+      message.to.should eq '+13456789123'
+    end
+
+    it 'returns the text for body' do
+      message = Message.new(:from => '+12345678912', :to => '+12345678912', :body => 'test')
+      message.body.should eq 'test'
+    end
+
+    it 'returns the code for status' do
+      message = Message.new(:from => '+12345678912', :to => '+12345678912', :body => 'test', :status => 200)
+      message.status.should eq 200
+    end
+  end
 
   context '#valid?' do
     it 'is valid with a from phone number' do
@@ -83,8 +104,6 @@ describe Message do
   end
 
   context '.send_message' do
-
-
     it 'POSTs a new text to the Twilio API' do
       stub = stub_request(:post, "https://#{ACCOUNT_SID}:#{AUTH_TOKEN}@api.twilio.com/2010-04-01/Accounts/#{ACCOUNT_SID}/SMS/Messages.json").with(:body => URI.encode_www_form('From' => from, 'To' => to, 'Body' => body))
       Message.create(:from => from, :to => to, :body => body)
@@ -105,10 +124,10 @@ describe Message do
       message.successful?.should be_true
     end
 
-    # it 'returns false if it is not successful' do
-    #   stub = stub_request(:post, "https://#{ACCOUNT_SID}:#{AUTH_TOKEN}@api.twilio.com/2010-04-01/Accounts/#{ACCOUNT_SID}/SMS/Messages.json").with(:body => URI.encode_www_form('From' => from, 'To' => "+14158297583", 'Body' => body))
-    #   message = Message.create(:from => from, :to => "+14158297583", :body => body)
-    #   message.successful?.should be_false
-    # end
+    it 'returns false if it is not successful' do
+      stub = stub_request(:post, "https://#{ACCOUNT_SID}:#{AUTH_TOKEN}@api.twilio.com/2010-04-01/Accounts/#{ACCOUNT_SID}/SMS/Messages.json").with(:body => URI.encode_www_form('From' => from, 'To' => "+14158297583", 'Body' => body))
+      message = Message.create(:from => from, :to => "+14158297583", :body => body)
+      message.successful?.should be_false
+    end
   end
 end

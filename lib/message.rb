@@ -3,7 +3,7 @@ require 'active_model'
 class Message
   include ActiveModel::Validations
 
-  attr_accessor :from, :to, :body
+  attr_accessor :from, :to, :body, :status
 
   validates :from, :to, :presence => true, :length => { :minimum => 12, :maximum => 12 }, :format => { :with => /\+1[2-9]\d*/}
   validates :body, :presence => true, :length => { :minimum => 1, :maximum => 160 }
@@ -26,6 +26,6 @@ class Message
   end
 
   def successful?
-    @status == 201 || @status == 200
+    self.status == 201 || self.status == 200
   end
 end
